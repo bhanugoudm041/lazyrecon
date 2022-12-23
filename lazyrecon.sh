@@ -10,6 +10,7 @@
 auquatoneThreads=5
 subdomainThreads=10
 dirsearchThreads=50
+token=justaddyourhttpauthorizationtokenvalue #login here and get a httpautorizationkey https://sslmate.com/console/  ex:Authorization: Bearer value 
 dirsearchWordlist=~/tools/dirsearch/db/dicc.txt
 massdnsWordlist=~/tools/SecLists/Discovery/DNS/clean-jhaddix-dns.txt
 chromiumPath=/snap/bin/chromium
@@ -113,7 +114,7 @@ recon(){
   echo "Listing subdomains using sublister..."
   python ~/tools/Sublist3r/sublist3r.py -d $domain -t 10 -v -o ./$domain/$foldername/$domain.txt > /dev/null
   echo "Checking certspotter..."
-  curl -s https://certspotter.com/api/v0/certs\?domain\=$domain | jq '.[].dns_names[]' | sed 's/\"//g' | sed 's/\*\.//g' | sort -u | grep $domain >> ./$domain/$foldername/$domain.txt
+  curl -H "Authorization: Bearer $token" -s "https://api.certspotter.com/v1/issuances?domain=indeed.com&expand=dns_names&expand=issuer" | jq '.[].dns_names[]' | sed 's/\"//g' | sed 's/\*\.//g' | sort -u | grep $domain >> ./$domain/$foldername/$domain.txt
   nsrecords $domain
   excludedomains
   echo "Starting discovery..."
